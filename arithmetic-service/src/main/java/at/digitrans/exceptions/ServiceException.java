@@ -1,4 +1,4 @@
-package at.ac.tuwien.big.we.exceptions;
+package at.digitrans.exceptions;
 
 import javax.xml.ws.WebFault;
 

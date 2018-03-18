@@ -1,9 +1,9 @@
-package at.ac.tuwien.big.we.webservice;
-
-import at.ac.tuwien.big.we.exceptions.ServiceException;
+package at.digitrans.webservice;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.math.BigDecimal;
 
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
@@ -12,7 +12,7 @@ import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
 import javax.xml.ws.Endpoint;
 
-import java.math.BigDecimal;
+import at.digitrans.exceptions.ServiceException;
 
 
 /**
@@ -66,7 +66,7 @@ public class ArithmeticService {
               new Object[]{minuend, subtrahend});
 
     if (minuend == null || subtrahend == null) {
-      LOG.debug("Received invalid request for substract function");
+      LOG.debug("Received invalid request for subtract function");
       throw (new ServiceException("Parameter invalid"));
     }
 
