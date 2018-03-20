@@ -111,7 +111,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>at.ac.tuwien.big.we.webservice.ArithmeticService</mainClass>
+							<mainClass>at.digitrans.webservice.ArithmeticService</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>

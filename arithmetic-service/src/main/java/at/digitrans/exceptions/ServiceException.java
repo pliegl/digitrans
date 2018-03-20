@@ -6,7 +6,7 @@ import javax.xml.ws.WebFault;
  * Created by pl
  * Exception thrown by sample service
  */
-@WebFault(name="ServiceFault", targetNamespace = "http://www.big.tuwien.ac.at/we")
+@WebFault(name="ServiceFault", targetNamespace = "http://www.digitrans.at")
 public class ServiceException extends Exception {
 
 
