@@ -34,6 +34,8 @@ public class ArithmeticService {
     System.setProperty("com.sun.xml.ws.fault.SOAPFaultBuilder.disableCaptureStackTrace", "false");
   }
 
+  public enum Gender {MALE, FEMALE};
+
   /**
    * Simple function for adding two parameters
    */
@@ -110,6 +112,11 @@ public class ArithmeticService {
   }
 
 
+  /**
+   * Returns the system the app is running on
+   * @return
+   * @throws ServiceException
+   */
   @WebMethod(operationName = "whoAreYou")
   @WebResult(name = "nameOfApplication")
   public String whoAreYou() throws ServiceException {
@@ -119,6 +126,35 @@ public class ArithmeticService {
         .append(System.getProperty("os.version"));
     LOG.debug("Telling the client who I am. {}", sb.toString());
     return sb.toString();
+  }
+
+
+  /**
+   * Adds a "Dipl.-Ing." to the name
+   * @param gender
+   * @param lastName
+   * @return
+   * @throws ServiceException
+   */
+  @WebMethod(operationName = "promoteMeToMaster")
+  @WebResult(name = "masterizedName")
+  public String promoteMeToMaster(@WebParam(name="gender") Gender gender, @WebParam(name = "lastName") String lastName) throws ServiceException {
+
+    StringBuilder sb = new StringBuilder();
+    if (Gender.MALE.equals(gender)) {
+      sb.append("Herr ");
+    }
+    else {
+      sb.append("Frau ");
+    }
+    sb.append("Dipl.-Ing. ");
+    sb.append(lastName);
+
+    LOG.debug("Telling the client the masterized string: {}", sb.toString());
+
+    return sb.toString();
+
+
   }
 
 
