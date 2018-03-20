@@ -7,8 +7,7 @@
         </encoder>
     </appender>
 
-    <logger name="at.ac.tuwien.big.we.webservice" level="info" />
-    <logger name="org.apache.wicket" level="warn" />
+    <logger name="at.digitrans.webservice" level="info" />
     <root>
         <level value="info" />
         <appender-ref ref="console" />

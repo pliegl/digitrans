@@ -153,9 +153,9 @@ public class ArithmeticService {
   public static void main(String[] args) {
     LOG.debug("Starting Arithmetic Web Service.");
     Endpoint endpoint = Endpoint.publish(
-        "http://localhost:8080/arithmeticservice",
+        "http://0.0.0.0:8080/arithmeticservice",
         new ArithmeticService());
-    LOG.debug("Access service under http://localhost:8080/arithmeticservice?wsdl");
+    LOG.debug("Access service under http://0.0.0.0:8080/arithmeticservice?wsdl");
   }
 
 }
