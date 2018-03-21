@@ -45,8 +45,6 @@ public class OrderController {
 
   /**
    * Get a single order
-   * @param uuid
-   * @return
    */
   @GetMapping("/orders/{uuid}")
   public Order getOrder(@PathVariable String uuid) {
@@ -64,7 +62,6 @@ public class OrderController {
 
   /**
    * Get all orders
-   * @return
    */
   @GetMapping("/orders")
   public Collection<Order> getOrders() {
@@ -78,7 +75,8 @@ public class OrderController {
    * Post (create) a single order on a specific URI
    */
   @PostMapping("/orders/{uuid}")
-  public ResponseEntity storeOrderOnExisting(@RequestBody Order order, @PathVariable String uuid, UriComponentsBuilder ucBuilder) {
+  public ResponseEntity storeOrderOnExisting(@RequestBody Order order, @PathVariable String uuid,
+                                             UriComponentsBuilder ucBuilder) {
 
     LOG.info("Received POST request on /orders/{uuid}");
 
@@ -87,14 +85,16 @@ public class OrderController {
     }
 
     if (!order.getUuid().equals(uuid)) {
-      throw new InvalidContentException("Unable to perform POST operation. UUID of resource and submitted resource UUID do not match.");
+      throw new InvalidContentException(
+          "Unable to perform POST operation. UUID of resource and submitted resource UUID do not match.");
     }
 
     //Does the order exist already?
     if (orderItems.containsKey(order.getUuid())) {
-      throw new InvalidContentException("Unable to store the order as a new order, as order with uuid " + order.getUuid() + " already exists");
+      throw new InvalidContentException(
+          "Unable to store the order as a new order, as order with uuid " + order.getUuid()
+          + " already exists");
     }
-
 
     //Store it
     orderItems.put(order.getUuid(), order);
@@ -103,7 +103,8 @@ public class OrderController {
 
     //Determine the location of the newly created document
     HttpHeaders httpHeaders = new HttpHeaders();
-    httpHeaders.setLocation(ucBuilder.path("/order-service/orders/{id}").buildAndExpand(order.getUuid()).toUri());
+    httpHeaders.setLocation(
+        ucBuilder.path("/order-service/orders/{id}").buildAndExpand(order.getUuid()).toUri());
     return new ResponseEntity(httpHeaders, HttpStatus.CREATED);
 
   }
@@ -111,7 +112,6 @@ public class OrderController {
 
   /**
    * Post (create) orders on the orders collection
-   * @param orders
    */
   @PostMapping("/orders")
   public void storeOrder(@RequestBody List<Order> orders, UriComponentsBuilder ucBuilder) {
@@ -122,15 +122,13 @@ public class OrderController {
                               if (Strings.isEmpty(o.getUuid())) {
                                 throw new InvalidContentException("Unable to process an order without a uuid");
                               }
+
+                              if (orderItems.containsKey(o.getUuid())) {
+                                throw new InvalidContentException(
+                                    "Unable to store the orders as, as order with uuid " + o.getUuid() + " already exists");
+                              }
                             }
     );
-
-    orders.stream().forEach((o) -> {
-      if (orderItems.containsKey(o.getUuid())) {
-        throw new InvalidContentException("Unable to store the orders as, as order with uuid " + o.getUuid() + " already exists");
-      }
-    });
-
 
     //Store it
     for (Order o : orders) {
@@ -155,7 +153,8 @@ public class OrderController {
     }
 
     if (!order.getUuid().equals(uuid)) {
-      throw new InvalidContentException("Unable to perform PUT operation. UUID of resource and submitted resource UUID do not match.");
+      throw new InvalidContentException(
+          "Unable to perform PUT operation. UUID of resource and submitted resource UUID do not match.");
     }
 
     //Put the order - the HashMap will take care of the create or update logic
@@ -186,7 +185,6 @@ public class OrderController {
       orderItems.put(o.getUuid(), o);
     }
 
-
     LOG.info("Successfully updated/created {} orders", orders.size());
 
   }
@@ -194,7 +192,6 @@ public class OrderController {
 
   /**
    * Delete an existing order
-   * @param uuid
    */
   @DeleteMapping("/orders/{uuid}")
   public ResponseEntity deleteOrder(@PathVariable String uuid) {
@@ -203,7 +200,8 @@ public class OrderController {
 
     //Does the order exist already?
     if (!orderItems.containsKey(uuid)) {
-      throw new InvalidContentException("Unable to delete order " + uuid + " as it does not exist.");
+      throw new InvalidContentException(
+          "Unable to delete order " + uuid + " as it does not exist.");
     }
 
     orderItems.remove(uuid);
@@ -216,7 +214,6 @@ public class OrderController {
 
   /**
    * Delete an existing order
-   * @param orders
    */
   @DeleteMapping("/orders")
   public ResponseEntity deleteOrders(@RequestBody List<Order> orders) {
@@ -227,7 +224,8 @@ public class OrderController {
 
     orders.stream().forEach((o) -> {
                               if (!orderItems.containsKey(o.getUuid())) {
-                                throw new InvalidContentException("Unable to delete order " + o.getUuid() + " as it does not exist.");
+                                throw new InvalidContentException(
+                                    "Unable to delete order " + o.getUuid() + " as it does not exist.");
                               }
                             }
     );
@@ -244,34 +242,37 @@ public class OrderController {
   }
 
 
-
-
-
-
-
-
   @PostConstruct
   private void init() {
 
     List<OrderItem> orderItemList = new ArrayList<>();
-    orderItemList.add(OrderItem.builder().id(1).description("Äpfel Golden Delicious").gtin("9834847348472").price(new BigDecimal("12")).quantity(new BigDecimal("5")).build());
-    orderItemList.add(OrderItem.builder().id(2).description("Birne groß").gtin("9845212365475").price(new BigDecimal("54")).quantity(new BigDecimal("3")).build());
-    orderItemList.add(OrderItem.builder().id(3).description("Weintrauben rot").gtin("94213545874521").price(new BigDecimal("23")).quantity(new BigDecimal("2")).build());
+    orderItemList.add(
+        OrderItem.builder().id(1).description("Äpfel Golden Delicious").gtin("9834847348472")
+            .price(new BigDecimal("12")).quantity(new BigDecimal("5")).build());
+    orderItemList.add(OrderItem.builder().id(2).description("Birne groß").gtin("9845212365475")
+                          .price(new BigDecimal("54")).quantity(new BigDecimal("3")).build());
+    orderItemList.add(
+        OrderItem.builder().id(3).description("Weintrauben rot").gtin("94213545874521")
+            .price(new BigDecimal("23")).quantity(new BigDecimal("2")).build());
     Order order1 = Order.builder().uuid("o1").createdAt(
         new Date()).orderItemList(orderItemList).orderedBy("Max Mustermann").build();
     orderItems.put(order1.getUuid(), order1);
 
     List<OrderItem> orderItemList2 = new ArrayList<>();
-    orderItemList2.add(OrderItem.builder().id(1).description("Buntstifte").gtin("9854521254521").price(new BigDecimal("23")).quantity(new BigDecimal("6")).build());
-    orderItemList2.add(OrderItem.builder().id(2).description("Bleistife").gtin("9536541875421").price(new BigDecimal("66")).quantity(new BigDecimal("3.87")).build());
-    orderItemList2.add(OrderItem.builder().id(3).description("Kugelschreiber").gtin("9565789542102").price(new BigDecimal("4")).quantity(new BigDecimal("2.98")).build());
-    Order order2 = Order.builder().uuid("o2").createdAt(new Date()).orderItemList(orderItemList2).orderedBy("Georg Gruber").build();
+    orderItemList2.add(OrderItem.builder().id(1).description("Buntstifte").gtin("9854521254521")
+                           .price(new BigDecimal("23")).quantity(new BigDecimal("6")).build());
+    orderItemList2.add(OrderItem.builder().id(2).description("Bleistife").gtin("9536541875421")
+                           .price(new BigDecimal("66")).quantity(new BigDecimal("3.87")).build());
+    orderItemList2.add(OrderItem.builder().id(3).description("Kugelschreiber").gtin("9565789542102")
+                           .price(new BigDecimal("4")).quantity(new BigDecimal("2.98")).build());
+    Order
+        order2 =
+        Order.builder().uuid("o2").createdAt(new Date()).orderItemList(orderItemList2)
+            .orderedBy("Georg Gruber").build();
     orderItems.put(order2.getUuid(), order2);
 
 
-
   }
-
 
 
 }
